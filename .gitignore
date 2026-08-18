@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.vscode/
+.ipynb_checkpoints/
+.venv/
+venv/
+datasets/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
