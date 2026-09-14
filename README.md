@@ -137,7 +137,8 @@ cs336-from-scratch/
 | --- | --- | --- |
 | Tokenizer Basic | [01_Tokenizer_Basic.ipynb](notes/week03_Tokenizer/01_Tokenizer_Basic.ipynb) | tokenizer 的四个概念、`ord()` vs bytes、256 个 byte 的完整性、UTF-8 round trip、compression ratio |
 | Toy BPE Trainer | [02_Toy_BPE_Trainer.ipynb](notes/week03_Tokenizer/02_Toy_BPE_Trainer.ipynb) | pair counting、tie-breaking、merge 实现、vocabulary 增长、toy BPE training loop、training 与 encoding 的区别 |
-| Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | 为什么需要 pre-tokenization、special tokens 与 overlapping special tokens |
+| Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex、contractions / numbers / emoji 的处理、pre-token frequency 与 pair frequency、正式的 BPE 数据结构 |
+| Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | special token 的 atomic 性质、正确的处理顺序、special token pattern（长度降序 / capturing group）、隔离 ordinary span 与 special span |
 | Tokenizer 理论笔记 | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes、BPE 的两个阶段、pair counting 与 tie-breaking、merge、encode / decode 流程、训练性能问题 |
 
 ---

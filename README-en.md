@@ -138,7 +138,8 @@ Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experim
 | --- | --- | --- |
 | Tokenizer Basics | [01_Tokenizer_Basic.ipynb](notes/week03_Tokenizer/01_Tokenizer_Basic.ipynb) | Four core concepts, `ord()` vs bytes, completeness of all 256 bytes, UTF-8 round trip, compression ratio |
 | Toy BPE Trainer | [02_Toy_BPE_Trainer.ipynb](notes/week03_Tokenizer/02_Toy_BPE_Trainer.ipynb) | Pair counting, tie-breaking, merge implementation, vocabulary growth, toy BPE training loop, training vs encoding |
-| Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | Why pre-tokenization is needed, special tokens and overlapping special tokens |
+| Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex, contractions / numbers / emoji, pre-token frequency vs pair frequency, the formal BPE data structures |
+| Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | Atomicity of special tokens, correct processing order, the special-token pattern (length-descending sort / capturing groups), isolating ordinary spans from special spans |
 | Tokenizer Theory Notes | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes, the two phases of BPE, pair counting and tie-breaking, merges, encode / decode flows, training performance |
 
 ---
