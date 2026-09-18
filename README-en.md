@@ -140,6 +140,7 @@ Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experim
 | Toy BPE Trainer | [02_Toy_BPE_Trainer.ipynb](notes/week03_Tokenizer/02_Toy_BPE_Trainer.ipynb) | Pair counting, tie-breaking, merge implementation, vocabulary growth, toy BPE training loop, training vs encoding |
 | Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex, contractions / numbers / emoji, pre-token frequency vs pair frequency, the formal BPE data structures |
 | Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | Atomicity of special tokens, correct processing order, the special-token pattern (length-descending sort / capturing groups), round-trip invariants, overlapping special tokens, the three-layer encode flow and a unified decode structure |
+| Correct BPE Trainer 🚧 | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | Internal state of a reference BPE trainer, hooking back into pre-tokenization, isolating special tokens first, maintaining `pretoken -> frequency` (work in progress) |
 | Tokenizer Theory Notes | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes, the two phases of BPE, pair counting and tie-breaking, merges, encode / decode flows, training performance |
 
 ---

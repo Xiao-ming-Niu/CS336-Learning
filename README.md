@@ -139,6 +139,7 @@ cs336-from-scratch/
 | Toy BPE Trainer | [02_Toy_BPE_Trainer.ipynb](notes/week03_Tokenizer/02_Toy_BPE_Trainer.ipynb) | pair counting、tie-breaking、merge 实现、vocabulary 增长、toy BPE training loop、training 与 encoding 的区别 |
 | Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex、contractions / numbers / emoji 的处理、pre-token frequency 与 pair frequency、正式的 BPE 数据结构 |
 | Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | special token 的 atomic 性质、正确的处理顺序、special token pattern（长度降序 / capturing group）、round-trip 不变量、overlapping special tokens、三层 encode 逻辑与统一的 decode 结构 |
+| Correct BPE Trainer 🚧 | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | 正式 BPE trainer 的内部状态、接回 pre-tokenization、special token 先隔离、维护 `pretoken -> frequency`（进行中） |
 | Tokenizer 理论笔记 | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes、BPE 的两个阶段、pair counting 与 tie-breaking、merge、encode / decode 流程、训练性能问题 |
 
 ---
