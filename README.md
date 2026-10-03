@@ -64,7 +64,7 @@ Mini LLM Training Stack
 
 ## 学习路线（20 周）
 
-完整计划见 **[cs336_learning_roadmap.md](cs336_learning_roadmap.md)**（含环境搭建、每周任务、里程碑与面试复盘）。
+完整计划见 **[cs336_learning_roadmap.md](cs336_learning_roadmap.md)**（含环境方案、每周任务、最终完成状态与参考资料）。
 
 | 阶段 | 周数 | 核心内容 | 主要产出 | 状态 |
 | --- | ---: | --- | --- | :---: |
@@ -94,7 +94,7 @@ Mini LLM Training Stack
 cs336-from-scratch/
 ├── README.md                    # 中文说明（本文件）
 ├── README-en.md                 # English version
-├── cs336_learning_roadmap.md    # 20 周自学路线图（环境 / 周计划 / 里程碑 / 资料）
+├── cs336_learning_roadmap.md    # 20 周自学路线图（环境 / 周计划 / 完成状态 / 资料）
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 1–5：张量思维与 Autograd
     ├── week02_Pytorch_nn/       # Lesson 6–12：PyTorch NN 基础 + Mini Project
@@ -139,7 +139,8 @@ cs336-from-scratch/
 | Toy BPE Trainer | [02_Toy_BPE_Trainer.ipynb](notes/week03_Tokenizer/02_Toy_BPE_Trainer.ipynb) | pair counting、tie-breaking、merge 实现、vocabulary 增长、toy BPE training loop、training 与 encoding 的区别 |
 | Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex、contractions / numbers / emoji 的处理、pre-token frequency 与 pair frequency、正式的 BPE 数据结构 |
 | Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | special token 的 atomic 性质、正确的处理顺序、special token pattern（长度降序 / capturing group）、round-trip 不变量、overlapping special tokens、三层 encode 逻辑与统一的 decode 结构 |
-| Correct BPE Trainer 🚧 | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | 正式 BPE trainer 的内部状态、接回 pre-tokenization、special token 先隔离、维护 `pretoken -> frequency`（进行中） |
+| Correct BPE Trainer | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | weighted pair counting、tie-breaking、non-overlapping merge 与其传播、vocab 初始化与增长、segmentation 的演化、determinism / special token contamination 测试、final validator |
+| Profile & Optimize BPE Training 🚧 | [06_profile_optimize_bpe_training.ipynb](notes/week03_Tokenizer/06_profile_optimize_bpe_training.ipynb) | reference baseline、naive trainer 的浪费点、benchmark corpus 与方法、cost decomposition、inverted index、incremental update 的数学原理（进行中） |
 | Tokenizer 理论笔记 | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes、BPE 的两个阶段、pair counting 与 tie-breaking、merge、encode / decode 流程、训练性能问题 |
 
 ---
@@ -173,11 +174,11 @@ Shape 正确  →  Forward 与 reference 对齐  →  Backward 与 reference 对
 ## 学习环境
 
 - **开发环境**：Windows + WSL2 / Ubuntu 24.04（安装到非 C 盘，swap 亦不占 C 盘）
-- **GPU**：NVIDIA GeForce RTX 3050 Ti Laptop GPU（定位与显存限制分析见 roadmap 第 36 节）
+- **GPU**：NVIDIA GeForce RTX 3050 Ti Laptop GPU（定位与显存限制分析见 roadmap 第 25 节）
 - **环境管理**：`mamba` 为主；复现 Stanford 官方 Assignment 时使用 `uv` + 官方 lockfile
 - **编辑器**：VS Code + WSL Remote
 
-环境搭建的完整步骤（WSL 安装位置、swap 配置、CUDA 验证、VS Code 工作流）见 [cs336_learning_roadmap.md](cs336_learning_roadmap.md) 第 2–12 节。
+环境方案（Windows 与 WSL2 的职责划分、Linux 项目文件放在 ext4 而非 `/mnt` 下）见 [cs336_learning_roadmap.md](cs336_learning_roadmap.md) 第 2 节；Git 工作流与备份策略见第 26–27 节。
 
 笔记为 Notebook 形式，可直接运行验证；建议先自己实现，再与 PyTorch reference 对齐。
 

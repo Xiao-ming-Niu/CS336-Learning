@@ -65,7 +65,7 @@ Notes are written primarily in **Chinese**, keeping English terminology, formula
 
 ## Learning Roadmap (20 Weeks)
 
-The full plan lives in **[cs336_learning_roadmap.md](cs336_learning_roadmap.md)** (environment setup, weekly tasks, milestones, interview review).
+The full plan lives in **[cs336_learning_roadmap.md](cs336_learning_roadmap.md)** (environment plan, weekly tasks, final completion criteria, references).
 
 | Phase | Weeks | Focus | Main Deliverable | Status |
 | --- | ---: | --- | --- | :---: |
@@ -95,7 +95,7 @@ Interview review      1 h
 cs336-from-scratch/
 ├── README.md                    # Chinese version (default)
 ├── README-en.md                 # English version (this file)
-├── cs336_learning_roadmap.md    # 20-week roadmap (environment / weekly plan / milestones / references)
+├── cs336_learning_roadmap.md    # 20-week roadmap (environment / weekly plan / completion criteria / references)
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 1–5: tensor thinking & autograd
     ├── week02_Pytorch_nn/       # Lesson 6–12: PyTorch NN fundamentals + mini project
@@ -140,7 +140,8 @@ Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experim
 | Toy BPE Trainer | [02_Toy_BPE_Trainer.ipynb](notes/week03_Tokenizer/02_Toy_BPE_Trainer.ipynb) | Pair counting, tie-breaking, merge implementation, vocabulary growth, toy BPE training loop, training vs encoding |
 | Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex, contractions / numbers / emoji, pre-token frequency vs pair frequency, the formal BPE data structures |
 | Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | Atomicity of special tokens, correct processing order, the special-token pattern (length-descending sort / capturing groups), round-trip invariants, overlapping special tokens, the three-layer encode flow and a unified decode structure |
-| Correct BPE Trainer 🚧 | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | Internal state of a reference BPE trainer, hooking back into pre-tokenization, isolating special tokens first, maintaining `pretoken -> frequency` (work in progress) |
+| Correct BPE Trainer | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | Weighted pair counting, tie-breaking, non-overlapping merge and its propagation, vocabulary initialization and growth, evolution of segmentation, determinism / special-token contamination tests, final validator |
+| Profile & Optimize BPE Training 🚧 | [06_profile_optimize_bpe_training.ipynb](notes/week03_Tokenizer/06_profile_optimize_bpe_training.ipynb) | Reference baseline, where the naive trainer wastes time, benchmark corpus and methodology, cost decomposition, inverted index, the math behind incremental updates (work in progress) |
 | Tokenizer Theory Notes | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes, the two phases of BPE, pair counting and tie-breaking, merges, encode / decode flows, training performance |
 
 ---
@@ -174,11 +175,11 @@ Correct shapes → Forward matches reference → Backward matches reference → 
 ## Environment
 
 - **Setup**: Windows + WSL2 / Ubuntu 24.04 (installed to a non-C drive, with swap off the C drive too)
-- **GPU**: NVIDIA GeForce RTX 3050 Ti Laptop GPU (capability analysis in section 36 of the roadmap)
+- **GPU**: NVIDIA GeForce RTX 3050 Ti Laptop GPU (capability analysis in section 25 of the roadmap)
 - **Env management**: mainly `mamba`; `uv` + official lockfiles when reproducing Stanford assignments
 - **Editor**: VS Code + WSL Remote
 
-Full setup steps (WSL location, swap configuration, CUDA verification, VS Code workflow) are in sections 2–12 of [cs336_learning_roadmap.md](cs336_learning_roadmap.md).
+The environment plan (dividing responsibilities between Windows and WSL2, keeping Linux project files on ext4 instead of `/mnt`) is in section 2 of [cs336_learning_roadmap.md](cs336_learning_roadmap.md); Git workflow and backup strategy are in sections 26–27.
 
 Notes are Jupyter notebooks and can be run directly. The recommended workflow is: implement it yourself first, then align against the PyTorch reference.
 

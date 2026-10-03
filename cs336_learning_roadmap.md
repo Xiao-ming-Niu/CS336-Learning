@@ -170,567 +170,11 @@ Dell Inspiron 7510
 
 ---
 
-# 3. 将 WSL2 / Ubuntu 安装到非 C 盘
+# 3. Phase 0：Week 1–2 PyTorch Bootcamp
 
-下面以 `D:` 为例。
+目标：
 
-如果你实际希望使用 `E:` 或 `F:`，把所有 `D:` 替换即可。
-
-推荐目录：
-
-```text
-D:\
-└── WSL\
-    ├── Ubuntu-24.04\
-    ├── swap\
-    └── backups\
-```
-
-## 3.1 不建议的结构
-
-不要把 Linux repo 直接放成：
-
-```text
-D:\projects\cs336
-```
-
-然后在 WSL 中通过：
-
-```text
-/mnt/d/projects/cs336
-```
-
-开发。
-
-原因：这仍然属于 Windows NTFS 文件系统，Linux 工具大量访问小文件时通常不如 WSL 内部 ext4 文件系统合适。
-
-正确思路是：
-
-```text
-D:\WSL\Ubuntu-24.04\...
-            ↓
-         ext4.vhdx
-            ↓
-Ubuntu 看见：
-/home/<username>/projects/cs336
-```
-
-也就是说：
-
-> 物理空间占 D 盘，但开发时仍然按照正常 Linux 文件系统使用。
-
----
-
-## 3.2 安装 WSL 本体，但先不安装 Linux distribution
-
-以管理员身份打开 PowerShell。
-
-先检查：
-
-```powershell
-wsl --version
-wsl --status
-```
-
-如果 WSL 尚未安装：
-
-```powershell
-wsl --install --no-distribution
-```
-
-如果系统提示重启：
-
-```text
-Restart Windows
-```
-
-重启后继续。
-
-更新 WSL：
-
-```powershell
-wsl --update
-```
-
-检查：
-
-```powershell
-wsl --version
-```
-
----
-
-## 3.3 查看 Ubuntu 名称
-
-```powershell
-wsl --list --online
-```
-
-目标通常是：
-
-```text
-Ubuntu-24.04
-```
-
----
-
-## 3.4 创建非 C 盘目录
-
-例如：
-
-```powershell
-New-Item -ItemType Directory -Force D:\WSL\Ubuntu-24.04
-New-Item -ItemType Directory -Force D:\WSL\swap
-New-Item -ItemType Directory -Force D:\WSL\backups
-```
-
----
-
-## 3.5 直接把 Ubuntu 安装到 D 盘
-
-新版 WSL 支持 `--location`。
-
-运行：
-
-```powershell
-wsl --install -d Ubuntu-24.04 --location D:\WSL\Ubuntu-24.04
-```
-
-安装后检查：
-
-```powershell
-wsl --list --verbose
-```
-
-应该看到类似：
-
-```text
-NAME             STATE     VERSION
-Ubuntu-24.04     Stopped   2
-```
-
-确认 `VERSION = 2`。
-
-如果不是：
-
-```powershell
-wsl --set-version Ubuntu-24.04 2
-```
-
----
-
-# 4. 让 WSL swap 也不占 C 盘
-
-WSL2 默认可能在 Windows 临时目录创建 swap VHD。
-
-如果希望 Linux 的大体积虚拟磁盘数据尽量都落在其他盘，可以配置：
-
-```text
-%UserProfile%\.wslconfig
-```
-
-注意：
-
-- `.wslconfig` 这个文本文件本身仍会位于 `C:\Users\<username>`；
-- 它只有几行文本，体积可忽略；
-- 真正可能占 GB 级空间的 swap VHD 可以放到 D 盘。
-
-推荐在 Windows 的 WSL Settings 中配置；也可以手工创建：
-
-```ini
-[wsl2]
-memory=10GB
-swap=6GB
-swapFile=D:\\WSL\\swap\\wsl-swap.vhdx
-```
-
-说明：
-
-### memory=10GB
-
-电脑总内存 16 GB。
-
-先给 WSL 10 GB 上限，给 Windows 保留约 6 GB。
-
-以后如果发现：
-
-```text
-Windows 很卡
-```
-
-可以改成：
-
-```ini
-memory=8GB
-```
-
-如果 Windows 几乎只运行 VS Code / 浏览器，并且 WSL 工作负载确实需要更多 RAM，再根据实际使用调整。
-
-### swap=6GB
-
-swap 不是 GPU VRAM。
-
-它只是在物理 RAM 不够时提供磁盘级缓冲。
-
-机器学习训练如果大量进入 swap 会非常慢，因此：
-
-> swap 是防止某些任务直接 OOM 的安全垫，不是正常训练内存。
-
-修改后：
-
-```powershell
-wsl --shutdown
-```
-
-重新进入 Ubuntu。
-
----
-
-# 5. Linux 文件到底保存在哪里
-
-假设 Ubuntu 安装目录是：
-
-```text
-D:\WSL\Ubuntu-24.04
-```
-
-Linux 内部：
-
-```bash
-cd ~
-pwd
-```
-
-会看到：
-
-```text
-/home/<username>
-```
-
-以后创建：
-
-```bash
-mkdir -p ~/projects
-mkdir -p ~/datasets
-mkdir -p ~/checkpoints
-```
-
-那么这些 Linux 文件：
-
-```text
-/home/<username>/projects
-/home/<username>/datasets
-/home/<username>/checkpoints
-```
-
-最终都会存储到 D 盘 Ubuntu 的虚拟磁盘中。
-
-因此你的目标可以实现：
-
-```text
-CS336 source code      → D:
-mamba environments     → D:
-pip/conda packages     → D:
-datasets               → D:
-model checkpoints      → D:
-Linux home directory   → D:
-Linux system packages  → D:
-WSL swap               → D:
-```
-
-仍然可能存在少量 WSL / Windows 组件、配置和系统级元数据位于 C 盘，这是 Windows/WSL 本身的一部分；但 Linux distribution 的主要数据和可增长磁盘内容可以放到其他盘。
-
----
-
-# 6. WSL 数据目录建议
-
-Ubuntu 内部推荐：
-
-```text
-/home/<username>/
-├── projects/
-│   ├── cs336-from-scratch/
-│   ├── cs336-assignment1/
-│   ├── cs336-assignment2/
-│   ├── cs336-assignment3/
-│   ├── cs336-assignment4/
-│   └── cs336-assignment5/
-│
-├── datasets/
-│   ├── tinystories/
-│   ├── openwebtext/
-│   └── common-crawl/
-│
-└── checkpoints/
-    ├── a1/
-    ├── scaling/
-    └── alignment/
-```
-
-但注意：
-
-> 特别大的原始 dataset / checkpoint 后期可以单独设计存储策略，不一定全部塞进 Ubuntu 主 VHD。
-
-原因是 WSL2 的 ext4 VHD 会动态增长。
-
-刚开始不需要复杂化。
-
----
-
-# 7. 第一次进入 Ubuntu
-
-第一次启动：
-
-```powershell
-wsl -d Ubuntu-24.04
-```
-
-创建：
-
-```text
-UNIX username
-password
-```
-
-Linux 输入密码时不会显示 `***`，这是正常行为。
-
-然后：
-
-```bash
-pwd
-whoami
-uname -a
-```
-
-学习最常用的 Linux 命令：
-
-```bash
-pwd
-ls
-cd
-mkdir
-cp
-mv
-rm
-cat
-less
-grep
-find
-```
-
-第一周只需要真正熟练：
-
-```text
-pwd
-ls
-cd
-mkdir
-cp
-mv
-rm
-```
-
----
-
-# 8. Ubuntu 初始化
-
-更新系统：
-
-```bash
-sudo apt update
-sudo apt upgrade -y
-```
-
-安装基础工具：
-
-```bash
-sudo apt install -y \
-    build-essential \
-    git \
-    curl \
-    wget \
-    unzip \
-    zip \
-    ca-certificates
-```
-
-检查：
-
-```bash
-git --version
-gcc --version
-```
-
----
-
-# 9. GPU 验证
-
-不要在 Ubuntu 里安装 Linux NVIDIA display driver。
-
-WSL2 使用 Windows 侧 NVIDIA driver 提供 GPU virtualization。
-
-Ubuntu 内运行：
-
-```bash
-nvidia-smi
-```
-
-目标是识别：
-
-```text
-NVIDIA GeForce RTX 3050 Ti Laptop GPU
-```
-
-之后 PyTorch 再验证：
-
-```python
-import torch
-
-print(torch.__version__)
-print(torch.cuda.is_available())
-print(torch.cuda.get_device_name(0))
-```
-
-预期：
-
-```text
-True
-NVIDIA GeForce RTX 3050 Ti Laptop GPU
-```
-
----
-
-# 10. mamba 策略
-
-继续使用 mamba。
-
-Windows mamba 和 WSL Linux mamba 是两套环境。
-
-推荐：
-
-```text
-Windows
-└── 原来的 mamba
-
-WSL Ubuntu
-└── Miniforge
-    └── mamba
-```
-
-Linux 中 Miniforge 安装在：
-
-```text
-/home/<username>/miniforge3
-```
-
-因为整个 Ubuntu distribution 位于非 C 盘，所以：
-
-```text
-mamba env
-package cache
-Python interpreter
-PyTorch
-```
-
-也都实际占用非 C 盘空间。
-
----
-
-# 11. mamba 与 uv 的分工
-
-不需要放弃 mamba。
-
-推荐策略：
-
-## 自己的学习 / 实验
-
-```text
-mamba
-```
-
-例如：
-
-```bash
-mamba create -n cs336 python=3.13
-mamba activate cs336
-```
-
-## Stanford 官方 Assignment
-
-如果官方仓库包含：
-
-```text
-pyproject.toml
-uv.lock
-```
-
-并且测试环境明确使用：
-
-```bash
-uv run pytest
-```
-
-则：
-
-> 为了 reproducibility，作业目录优先遵守官方 lockfile。
-
-这并不意味着日常环境管理要全面切换到 uv。
-
-原则：
-
-```text
-个人环境       mamba
-课程复现       official lockfile
-```
-
----
-
-# 12. VS Code 开发工作流
-
-Windows 安装：
-
-```text
-VS Code
-WSL Extension
-```
-
-不要在 Ubuntu 里另外安装完整 VS Code GUI。
-
-进入项目：
-
-```bash
-cd ~/projects
-code .
-```
-
-VS Code 左下角确认：
-
-```text
-WSL: Ubuntu-24.04
-```
-
-此时：
-
-```text
-VS Code UI         Windows
-Terminal           Ubuntu
-Python             Ubuntu
-Git                Ubuntu
-Project filesystem Ubuntu ext4
-GPU                Windows Driver → WSL
-```
-
----
-
-# 13. Phase 0：Week 1–2 PyTorch Bootcamp
-
-你已经了解 Python 简单语法，但不能独立实现 Transformer。
-
-由于数学背景是计算数学研究生，不需要重复花大量时间学习线性代数和微积分。
-
-重点补：
-
-> Python engineering + PyTorch tensor programming。
+> 从零开始掌握 Python / PyTorch 基础，为后续学习打下坚实基础。
 
 ---
 
@@ -971,7 +415,7 @@ test
 
 ---
 
-# 14. Phase 1：Weeks 3–7 — Assignment 1 Basics
+# 4. Phase 1：Weeks 3–7 — Assignment 1 Basics
 
 这是整个 CS336 最关键的阶段。
 
@@ -1027,7 +471,7 @@ notes/01-tokenization.md
 
 ---
 
-# 15. Week 4：Neural Network Primitives
+# 5. Week 4：Neural Network Primitives
 
 实现：
 
@@ -1072,7 +516,7 @@ $$
 
 ---
 
-# 16. Week 5：Attention
+# 6. Week 5：Attention
 
 核心公式：
 
@@ -1141,7 +585,7 @@ attention @ V
 
 ---
 
-# 17. Week 6：Transformer + AdamW
+# 7. Week 6：Transformer + AdamW
 
 组合：
 
@@ -1196,7 +640,7 @@ class AdamW:
 
 ---
 
-# 18. Week 7：TinyStories Training
+# 8. Week 7：TinyStories Training
 
 建立完整训练流程：
 
@@ -1247,7 +691,7 @@ CS336 A1 — Language Model From Scratch
 
 ---
 
-# 19. Phase 2：Weeks 8–11 — Assignment 2 Systems
+# 9. Phase 2：Weeks 8–11 — Assignment 2 Systems
 
 目标：
 
@@ -1294,7 +738,7 @@ fixed dtype
 
 ---
 
-# 20. Week 9：Profiling + torch.compile
+# 10. Week 9：Profiling + torch.compile
 
 学习：
 
@@ -1320,7 +764,7 @@ optimized primitive
 
 ---
 
-# 21. Week 10：Triton
+# 11. Week 10：Triton
 
 推荐顺序：
 
@@ -1379,7 +823,7 @@ learning
 
 ---
 
-# 22. Week 11：Distributed Training
+# 12. Week 11：Distributed Training
 
 学习顺序：
 
@@ -1421,11 +865,9 @@ activations
 
 ---
 
-# 23. Phase 3：Weeks 12–13 — Scaling Laws
+# 13. Phase 3：Weeks 12–13 — Scaling Laws
 
-这部分非常适合计算数学背景。
-
-核心：
+这部分核心：
 
 $$
 C \approx 6ND
@@ -1497,7 +939,7 @@ LLM training
 
 ---
 
-# 24. Phase 4：Weeks 14–16 — Data
+# 14. Phase 4：Weeks 14–16 — Data
 
 目标：
 
@@ -1529,7 +971,7 @@ quality filtering
 
 ---
 
-# 25. Week 15：Deduplication
+# 15. Week 15：Deduplication
 
 学习：
 
@@ -1549,7 +991,7 @@ LSH
 
 ---
 
-# 26. Week 16：Train on Different Data Mixtures
+# 16. Week 16：Train on Different Data Mixtures
 
 比较：
 
@@ -1582,7 +1024,7 @@ sample quality
 
 ---
 
-# 27. Phase 5：Weeks 17–19 — Alignment
+# 17. Phase 5：Weeks 17–19 — Alignment
 
 学习顺序：
 
@@ -1621,7 +1063,7 @@ $$
 
 ---
 
-# 28. Week 18：DPO
+# 18. Week 18：DPO
 
 理解 preference pair：
 
@@ -1648,7 +1090,7 @@ beta 控制什么？
 
 ---
 
-# 29. Week 19：GRPO / Reasoning
+# 19. Week 19：GRPO / Reasoning
 
 做一个小型 reasoning experiment。
 
@@ -1690,7 +1132,7 @@ KL regularization
 
 ---
 
-# 30. Phase 6：Week 20 — Portfolio
+# 20. Phase 6：Week 20 — Portfolio
 
 最终建议至少维护：
 
@@ -1706,7 +1148,7 @@ cs336-from-scratch
 
 ---
 
-# 31. 主项目结构
+# 21. 主项目结构
 
 最终整理成：
 
@@ -1744,7 +1186,7 @@ cs336-from-scratch/
 
 ---
 
-# 32. Jekyll GitHub Pages
+# 22. Jekyll GitHub Pages
 
 Jekyll 首页不需要复制所有代码。
 
@@ -1788,7 +1230,7 @@ Work in progress
 
 ---
 
-# 33. 每个知识单元统一学习模板
+# 23. 每个知识单元统一学习模板
 
 以后课程笔记固定采用：
 
@@ -1838,7 +1280,7 @@ Work in progress
 
 ---
 
-# 34. 代码规范
+# 24. 代码规范
 
 项目代码统一遵循：
 
@@ -1870,57 +1312,7 @@ Float[Tensor, "batch seq d_model"]
 
 ---
 
-# 35. “自己实现”与“现代工程实现”分开
-
-学习阶段：
-
-```text
-自己实现
-softmax
-attention
-RMSNorm
-AdamW
-```
-
-目的是理解。
-
-现代工程阶段则优先研究：
-
-```text
-PyTorch SDPA
-torch.compile
-FlexAttention
-Triton
-optimized distributed primitives
-```
-
-原则：
-
-```text
-手写 primitive
-    ↓
-unit test
-    ↓
-与 reference implementation 对齐
-    ↓
-profile
-    ↓
-optimized implementation
-```
-
-不要一开始就调用最高层 API。
-
-否则很容易变成：
-
-```text
-会用模型
-≠
-理解模型
-```
-
----
-
-# 36. RTX 3050 Ti 的定位
+# 25. RTX 3050 Ti 的定位
 
 本地 GPU 主要用于：
 
@@ -1964,75 +1356,7 @@ local analysis
 
 ---
 
-# 37. 面试路线同步进行
-
-从 Week 3 开始，每周增加一组面试问题。
-
-## Transformer
-
-- Self-Attention 时间复杂度？
-- 为什么除以 \(\sqrt{d_k}\)？
-- causal mask 在哪里加？
-- MHA 与 GQA 区别？
-- RoPE 如何编码 relative position？
-- RMSNorm 与 LayerNorm 区别？
-- SwiGLU 为什么常见？
-
-## Training
-
-- Adam 与 AdamW 区别？
-- gradient clipping 为什么需要？
-- warmup 为什么有效？
-- training loss 与 validation loss 分别说明什么？
-
-## Systems
-
-- FlashAttention 为什么减少 HBM traffic？
-- arithmetic intensity 是什么？
-- compute-bound / memory-bound 如何判断？
-- DDP 的 communication cost？
-- ZeRO/FSDP shard 什么？
-
-## Scaling
-
-- Chinchilla-style compute optimality 是什么？
-- 为什么 parameter count 不是唯一 scaling variable？
-
-## Alignment
-
-- SFT / RLHF / DPO / GRPO 区别？
-- on-policy / off-policy？
-- KL penalty？
-- reward hacking？
-
----
-
-# 38. 每周完成标准
-
-不要用：
-
-```text
-“视频看完了”
-```
-
-作为完成标准。
-
-使用：
-
-```text
-[ ] 核心公式能解释
-[ ] tensor shapes 能手算
-[ ] 核心代码自己写过
-[ ] pytest 通过
-[ ] 至少一个 experiment
-[ ] 记录失败案例
-[ ] 整理 GitHub note
-[ ] 能回答 3–5 个面试问题
-```
-
----
-
-# 39. Git 工作流
+# 26. Git 工作流
 
 建议从一开始形成：
 
@@ -2064,7 +1388,7 @@ Fix RoPE broadcasting bug
 
 ---
 
-# 40. Backup
+# 27. Backup
 
 由于整个 Linux distribution 在一个 VHD 中，建议阶段性备份。
 
@@ -2099,194 +1423,7 @@ environment / Linux state
 
 ---
 
-# 41. 前两周立即执行计划
-
-## Week 1
-
-### Day 1
-
-```text
-WSL2 安装到非 C 盘
-Ubuntu 初始化
-Linux 基础命令
-GPU nvidia-smi
-```
-
-### Day 2
-
-```text
-Miniforge / mamba
-VS Code WSL
-Git
-PyTorch CUDA
-```
-
-### Day 3
-
-```text
-Tensor shape
-dtype
-device
-reshape
-transpose
-```
-
-### Day 4
-
-```text
-broadcasting
-```
-
-### Day 5
-
-```text
-matrix multiplication
-einsum
-```
-
-### Weekend
-
-```text
-autograd
-小练习
-GitHub note
-```
-
----
-
-## Week 2
-
-```text
-nn.Module
-Linear
-Embedding
-Softmax
-Cross Entropy
-SGD
-Adam
-Training Loop
-Mini Project
-```
-
-完成后正式进入：
-
-```text
-CS336 Lecture 1
-+
-Assignment 1
-+
-BPE Tokenizer
-```
-
----
-
-# 42. 第一阶段里程碑
-
-当以下内容完成时，说明你已经可以正式进入 CS336：
-
-```text
-[ ] WSL2 Ubuntu 正常
-[ ] Ubuntu 数据位于非 C 盘
-[ ] nvidia-smi 能识别 RTX 3050 Ti
-[ ] mamba 正常
-[ ] PyTorch CUDA available
-[ ] VS Code WSL 正常
-[ ] Git 正常
-[ ] 能熟练 cd / ls / pwd / mkdir / cp / mv / rm
-[ ] 理解 tensor shape
-[ ] 理解 broadcasting
-[ ] 能使用 matmul / einsum
-[ ] 理解 autograd
-[ ] 能写 nn.Module
-[ ] 能写最简单的 training loop
-```
-
----
-
-# 43. 推荐资料优先级
-
-以后资料搜索顺序：
-
-```text
-1. Stanford CS336 2026 官方课程
-2. Stanford CS336 官方 lecture repository
-3. Stanford CS336 官方 assignment repository
-4. PyTorch 官方文档
-5. Triton 官方文档
-6. 原论文
-7. 高质量第三方笔记
-8. 其他教程
-```
-
-不要优先搜索 assignment solution。
-
-使用第三方 solution 的原则：
-
-```text
-先独立实现
-↓
-测试失败
-↓
-定位问题
-↓
-仍然无法解决
-↓
-再参考思路
-```
-
-而不是直接复制。
-
----
-
-# 44. 推荐的长期学习原则
-
-### Principle 1
-
-```text
-Correctness before performance
-```
-
-### Principle 2
-
-```text
-Shape before code
-```
-
-### Principle 3
-
-```text
-Formula before API
-```
-
-### Principle 4
-
-```text
-Benchmark before optimization
-```
-
-### Principle 5
-
-```text
-Experiment before conclusion
-```
-
-### Principle 6
-
-```text
-Explain before memorizing
-```
-
-### Principle 7
-
-```text
-Small reproducible experiment
->
-large uncontrolled experiment
-```
-
----
-
-# 45. 最终完成状态
+# 28. 最终完成状态
 
 20 周后希望你的 GitHub 可以明确证明：
 
@@ -2316,7 +1453,7 @@ I can explain all of these in an interview.
 
 ---
 
-# 46. 官方参考资料
+# 29. 官方参考资料
 
 建议始终以最新官方资料为准：
 
@@ -2330,43 +1467,3 @@ I can explain all of these in an interview.
 - PyTorch: <https://pytorch.org/>
 - Triton: <https://triton-lang.org/>
 - Mamba: <https://mamba.readthedocs.io/>
-
----
-
-## 当前下一步
-
-先不要急着安装 mamba 或 PyTorch。
-
-第一步只完成：
-
-```powershell
-wsl --version
-wsl --status
-wsl --list --online
-```
-
-然后把 Ubuntu 安装到目标非 C 盘：
-
-```powershell
-wsl --install -d Ubuntu-24.04 --location D:\WSL\Ubuntu-24.04
-```
-
-实际盘符不是 D: 时替换成你的目标盘符。
-
-安装完成后：
-
-```bash
-pwd
-uname -a
-nvidia-smi
-```
-
-之后再继续配置：
-
-```text
-Miniforge / mamba
-→ PyTorch CUDA
-→ VS Code WSL
-→ Git
-→ PyTorch Bootcamp
-```
