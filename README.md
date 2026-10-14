@@ -5,7 +5,7 @@
 > 自学 Stanford [CS336: Language Modeling from Scratch](https://cs336.stanford.edu/) 的完整学习仓库：
 > 从 PyTorch 张量思维出发，一路走到 Tokenizer → Transformer → 训练 → GPU 系统 → Scaling Laws → Data → Alignment 的完整 LLM Training Stack。
 
-**当前进度：Week 3 / 20（Phase 0 完成，Phase 1 进行中）**
+**当前进度：Week 4 / 20（Week 3 完成，Week 4 进行中）**
 
 ---
 
@@ -91,14 +91,15 @@ Mini LLM Training Stack
 ## 仓库结构
 
 ```text
-cs336-from-scratch/
+CS336-Learning/
 ├── README.md                    # 中文说明（本文件）
 ├── README-en.md                 # English version
 ├── cs336_learning_roadmap.md    # 20 周自学路线图（环境 / 周计划 / 完成状态 / 资料）
+├── pyrightconfig.json           # Pyright 类型检查配置（指向 cs336 conda 环境）
 └── notes/
-    ├── week01_Tensor_thinking/  # Lesson 1–5：张量思维与 Autograd
-    ├── week02_Pytorch_nn/       # Lesson 6–12：PyTorch NN 基础 + Mini Project
-    └── week03_Tokenizer/        # Tokenizer 基础 / Toy BPE / Pre-tokenization
+    ├── week01_Tensor_thinking/  # Lesson 01–05：张量思维与 Autograd
+    ├── week02_Pytorch_nn/       # Lesson 06–12：PyTorch NN 基础 + Mini Project
+    └── week03_Tokenizer/        # Lesson 01–08：Tokenizer 全流程；Lesson 09–10：Week 4 起始
 ```
 
 后续 Assignment 会按 Phase 逐步扩展出 `src/`、`tests/`、`benchmarks/`、`configs/`、`experiments/` 等目录。
@@ -140,8 +141,19 @@ cs336-from-scratch/
 | Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex、contractions / numbers / emoji 的处理、pre-token frequency 与 pair frequency、正式的 BPE 数据结构 |
 | Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | special token 的 atomic 性质、正确的处理顺序、special token pattern（长度降序 / capturing group）、round-trip 不变量、overlapping special tokens、三层 encode 逻辑与统一的 decode 结构 |
 | Correct BPE Trainer | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | weighted pair counting、tie-breaking、non-overlapping merge 与其传播、vocab 初始化与增长、segmentation 的演化、determinism / special token contamination 测试、final validator |
-| Profile & Optimize BPE Training 🚧 | [06_profile_optimize_bpe_training.ipynb](notes/week03_Tokenizer/06_profile_optimize_bpe_training.ipynb) | reference baseline、naive trainer 的浪费点、benchmark corpus 与方法、cost decomposition、inverted index、incremental update 的数学原理（进行中） |
+| Profile & Optimize BPE Training | [06_profile_optimize_bpe_training.ipynb](notes/week03_Tokenizer/06_profile_optimize_bpe_training.ipynb) | 保留「正确的慢版本」作为 oracle、profiling 实测热点、merge 的局部性、`pair_counts` + `pair_to_sequences` 反向索引、增量更新公式、merge 后 sequence「撞车」的处理、与慢版本逐轮对答案 |
+| File-based BPE Correctness | [07_File_Based_BPE_Correctness.ipynb](notes/week03_Tokenizer/07_File_Based_BPE_Correctness.ipynb) | 文件分块的安全边界（delimiter 恰好落在读取块边界）、$C(T)=\sum_i C(T_i)$ 何时成立、局部 Counter 与聚合、差分测试（全文件统计 == 分块统计）、多进程 pre-tokenization，以及「为什么 BPE merge 不能每块各训一次」 |
+| Tokenizer Inference | [08_Tokenizer_Inference.ipynb](notes/week03_Tokenizer/08_Tokenizer_Inference.ipynb) | merge rank 与 encode 的贪心合并、从 256 个基础 bytes 建立 vocab、special token 检测先于普通 regex、decode 先连接 bytes 再按 UTF-8 解码、round-trip 与边界情况、chunked vs streaming encode、复杂度与真实工程 |
 | Tokenizer 理论笔记 | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes、BPE 的两个阶段、pair counting 与 tie-breaking、merge、encode / decode 流程、训练性能问题 |
+
+### Week 4 — Neural Network Primitives 🚧
+
+| # | Lesson | Notebook | 关键内容 |
+| --- | --- | --- | --- |
+| 9 | Tensor Shapes / Linear / Embedding | [09_Tensor_Shapes_Linear_Embedding.ipynb](notes/week03_Tokenizer/09_Tensor_Shapes_Linear_Embedding.ipynb) | shape / stride / dtype、broadcasting 与 batched matmul、Linear 公式与 PyTorch 权重存储惯例、forward 相同之外还要看 backward、Embedding 是查表而非把 token ID 当数值、重复 token 的梯度累加、参数量与显存的第一层估算、极端 shape 边界 |
+| 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week03_Tokenizer/10_RMSNorm_SwiGLU_Residual.ipynb) | 为什么需要 normalization、RMSNorm 数值实验与 ε 的作用、SwiGLU 为什么使用三次 Linear、residual 的 identity path、Pre-Norm block 的顺序、关键正确性检查 |
+
+> 说明：Lesson 09–10 属于 Week 4（Neural Network Primitives），目前文件仍放在 `week03_Tokenizer/` 目录下。Week 4 的 Softmax 与 Cross Entropy 已在 Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb) 中完成。
 
 ---
 
@@ -223,8 +235,8 @@ Fix RoPE broadcasting bug
 
 - [x] Week 1 — Tensor Thinking（Lesson 1–5）
 - [x] Week 2 — PyTorch NN Fundamentals（Lesson 6–12，含 Mini Project）
-- [x] Week 3 — Tokenizer（基本概念 / Toy BPE / Pre-tokenization）
-- [ ] Week 4 — Neural Network Primitives
+- [x] Week 3 — Tokenizer（Lesson 01–08：基本概念 / Toy BPE / Pre-tokenization / Special Tokens / Correct BPE / Profiling 与优化 / 文件分块与多进程 / Inference）
+- [ ] Week 4 — Neural Network Primitives（🚧 进行中：Lesson 09–10 已覆盖 Tensor Shapes / Linear / Embedding / RMSNorm / SwiGLU / Residual）
 - [ ] Week 5 — Attention
 - [ ] Week 6 — Transformer + AdamW
 - [ ] Week 7 — TinyStories Training

@@ -6,7 +6,7 @@
 > starting from PyTorch tensor thinking and building up the full LLM training stack:
 > Tokenizer → Transformer → Training → GPU Systems → Scaling Laws → Data → Alignment.
 
-**Current progress: Week 3 / 20 (Phase 0 done, Phase 1 in progress)**
+**Current progress: Week 4 / 20 (Week 3 done, Week 4 in progress)**
 
 ---
 
@@ -92,14 +92,15 @@ Interview review      1 h
 ## Repository Layout
 
 ```text
-cs336-from-scratch/
+CS336-Learning/
 ├── README.md                    # Chinese version (default)
 ├── README-en.md                 # English version (this file)
 ├── cs336_learning_roadmap.md    # 20-week roadmap (environment / weekly plan / completion criteria / references)
+├── pyrightconfig.json           # Pyright type-checking config (points at the cs336 conda env)
 └── notes/
-    ├── week01_Tensor_thinking/  # Lesson 1–5: tensor thinking & autograd
-    ├── week02_Pytorch_nn/       # Lesson 6–12: PyTorch NN fundamentals + mini project
-    └── week03_Tokenizer/        # Tokenizer basics / toy BPE / pre-tokenization
+    ├── week01_Tensor_thinking/  # Lesson 01–05: tensor thinking & autograd
+    ├── week02_Pytorch_nn/       # Lesson 06–12: PyTorch NN fundamentals + mini project
+    └── week03_Tokenizer/        # Lesson 01–08: the full tokenizer pipeline; Lesson 09–10: start of Week 4
 ```
 
 Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experiments/` directories as assignments progress.
@@ -141,8 +142,19 @@ Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experim
 | Pre-tokenization | [03_Pre-Tokenization.ipynb](notes/week03_Tokenizer/03_Pre-Tokenization.ipynb) | GPT-2 style pre-tokenization regex, contractions / numbers / emoji, pre-token frequency vs pair frequency, the formal BPE data structures |
 | Special Tokens | [04_Special_Tokens.ipynb](notes/week03_Tokenizer/04_Special_Tokens.ipynb) | Atomicity of special tokens, correct processing order, the special-token pattern (length-descending sort / capturing groups), round-trip invariants, overlapping special tokens, the three-layer encode flow and a unified decode structure |
 | Correct BPE Trainer | [05_Correct_BPE_Trainer.ipynb](notes/week03_Tokenizer/05_Correct_BPE_Trainer.ipynb) | Weighted pair counting, tie-breaking, non-overlapping merge and its propagation, vocabulary initialization and growth, evolution of segmentation, determinism / special-token contamination tests, final validator |
-| Profile & Optimize BPE Training 🚧 | [06_profile_optimize_bpe_training.ipynb](notes/week03_Tokenizer/06_profile_optimize_bpe_training.ipynb) | Reference baseline, where the naive trainer wastes time, benchmark corpus and methodology, cost decomposition, inverted index, the math behind incremental updates (work in progress) |
+| Profile & Optimize BPE Training | [06_profile_optimize_bpe_training.ipynb](notes/week03_Tokenizer/06_profile_optimize_bpe_training.ipynb) | Keeping the correct-but-slow version as an oracle, profiling to find the real hotspot, merge locality, the `pair_counts` + `pair_to_sequences` inverted index, the incremental-update formula, handling sequences that "collide" after a merge, checking round by round against the slow version |
+| File-based BPE Correctness | [07_File_Based_BPE_Correctness.ipynb](notes/week03_Tokenizer/07_File_Based_BPE_Correctness.ipynb) | Safe chunk boundaries for a file (delimiters landing exactly on a read boundary), when $C(T)=\sum_i C(T_i)$ holds, local counters and aggregation, differential testing (whole-file counts == chunked counts), multi-process pre-tokenization, and why BPE merges cannot be trained per chunk |
+| Tokenizer Inference | [08_Tokenizer_Inference.ipynb](notes/week03_Tokenizer/08_Tokenizer_Inference.ipynb) | Merge ranks and greedy merging during encode, building a vocab from the 256 base bytes, detecting special tokens before ordinary regex, decode concatenating bytes before UTF-8 decoding, round-trip and edge cases, chunked vs streaming encode, complexity and real-world engineering |
 | Tokenizer Theory Notes | [Tokenizer.md](notes/week03_Tokenizer/Tokenizer.md) | Unicode / UTF-8 / bytes, the two phases of BPE, pair counting and tie-breaking, merges, encode / decode flows, training performance |
+
+### Week 4 — Neural Network Primitives 🚧
+
+| # | Lesson | Notebook | Highlights |
+| --- | --- | --- | --- |
+| 9 | Tensor Shapes / Linear / Embedding | [09_Tensor_Shapes_Linear_Embedding.ipynb](notes/week03_Tokenizer/09_Tensor_Shapes_Linear_Embedding.ipynb) | Shape / stride / dtype, broadcasting and batched matmul, the linear formula vs PyTorch's weight layout, matching backward and not just forward, embedding as a table lookup rather than numeric token IDs, gradient accumulation for repeated tokens, first-order parameter and memory estimates, extreme-shape boundaries |
+| 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week03_Tokenizer/10_RMSNorm_SwiGLU_Residual.ipynb) | Why normalization is needed, numerical experiments on RMSNorm and the role of ε, why SwiGLU uses three linears, the identity path of a residual connection, the ordering inside a pre-norm block, key correctness checks |
+
+> Note: Lessons 09–10 belong to Week 4 (Neural Network Primitives) but currently still live in the `week03_Tokenizer/` directory. Softmax and cross entropy for Week 4 were already covered in Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb).
 
 ---
 
@@ -224,8 +236,8 @@ Fix RoPE broadcasting bug
 
 - [x] Week 1 — Tensor Thinking (Lessons 1–5)
 - [x] Week 2 — PyTorch NN Fundamentals (Lessons 6–12, including the mini project)
-- [x] Week 3 — Tokenizer (basics / toy BPE / pre-tokenization)
-- [ ] Week 4 — Neural Network Primitives
+- [x] Week 3 — Tokenizer (Lessons 01–08: basics / toy BPE / pre-tokenization / special tokens / correct BPE / profiling and optimization / file-based chunking and multi-processing / inference)
+- [ ] Week 4 — Neural Network Primitives (🚧 in progress: Lessons 09–10 cover tensor shapes / linear / embedding / RMSNorm / SwiGLU / residual)
 - [ ] Week 5 — Attention
 - [ ] Week 6 — Transformer + AdamW
 - [ ] Week 7 — TinyStories Training
