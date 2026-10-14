@@ -99,7 +99,8 @@ CS336-Learning/
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 01–05：张量思维与 Autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12：PyTorch NN 基础 + Mini Project
-    └── week03_Tokenizer/        # Lesson 01–08：Tokenizer 全流程；Lesson 09–10：Week 4 起始
+    ├── week03_Tokenizer/        # Lesson 01–08：Tokenizer 全流程（Basic → Inference）
+    └── week04_Neural_Network_Primitives/  # Lesson 09–10：Linear / Embedding / RMSNorm / SwiGLU / Residual
 ```
 
 后续 Assignment 会按 Phase 逐步扩展出 `src/`、`tests/`、`benchmarks/`、`configs/`、`experiments/` 等目录。
@@ -150,10 +151,10 @@ CS336-Learning/
 
 | # | Lesson | Notebook | 关键内容 |
 | --- | --- | --- | --- |
-| 9 | Tensor Shapes / Linear / Embedding | [09_Tensor_Shapes_Linear_Embedding.ipynb](notes/week03_Tokenizer/09_Tensor_Shapes_Linear_Embedding.ipynb) | shape / stride / dtype、broadcasting 与 batched matmul、Linear 公式与 PyTorch 权重存储惯例、forward 相同之外还要看 backward、Embedding 是查表而非把 token ID 当数值、重复 token 的梯度累加、参数量与显存的第一层估算、极端 shape 边界 |
-| 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week03_Tokenizer/10_RMSNorm_SwiGLU_Residual.ipynb) | 为什么需要 normalization、RMSNorm 数值实验与 ε 的作用、SwiGLU 为什么使用三次 Linear、residual 的 identity path、Pre-Norm block 的顺序、关键正确性检查 |
+| 9 | Tensor Shapes / Linear / Embedding | [09_Tensor_Shapes_Linear_Embedding.ipynb](notes/week04_Neural_Network_Primitives/09_Tensor_Shapes_Linear_Embedding.ipynb) | shape / stride / dtype、broadcasting 与 batched matmul、Linear 公式与 PyTorch 权重存储惯例、forward 相同之外还要看 backward、Embedding 是查表而非把 token ID 当数值、重复 token 的梯度累加、参数量与显存的第一层估算、极端 shape 边界 |
+| 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week04_Neural_Network_Primitives/10_RMSNorm_SwiGLU_Residual.ipynb) | 为什么需要 normalization、RMSNorm 数值实验与 ε 的作用、SwiGLU 为什么使用三次 Linear、residual 的 identity path、Pre-Norm block 的顺序、关键正确性检查 |
 
-> 说明：Lesson 09–10 属于 Week 4（Neural Network Primitives），目前文件仍放在 `week03_Tokenizer/` 目录下。Week 4 的 Softmax 与 Cross Entropy 已在 Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb) 中完成。
+> 说明：Week 4 的 Softmax 与 Cross Entropy 已在 Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb) 中完成。
 
 ---
 

@@ -100,7 +100,8 @@ CS336-Learning/
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 01–05: tensor thinking & autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12: PyTorch NN fundamentals + mini project
-    └── week03_Tokenizer/        # Lesson 01–08: the full tokenizer pipeline; Lesson 09–10: start of Week 4
+    ├── week03_Tokenizer/        # Lesson 01–08: the full tokenizer pipeline (basics → inference)
+    └── week04_Neural_Network_Primitives/  # Lesson 09–10: linear / embedding / RMSNorm / SwiGLU / residual
 ```
 
 Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experiments/` directories as assignments progress.
@@ -151,10 +152,10 @@ Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experim
 
 | # | Lesson | Notebook | Highlights |
 | --- | --- | --- | --- |
-| 9 | Tensor Shapes / Linear / Embedding | [09_Tensor_Shapes_Linear_Embedding.ipynb](notes/week03_Tokenizer/09_Tensor_Shapes_Linear_Embedding.ipynb) | Shape / stride / dtype, broadcasting and batched matmul, the linear formula vs PyTorch's weight layout, matching backward and not just forward, embedding as a table lookup rather than numeric token IDs, gradient accumulation for repeated tokens, first-order parameter and memory estimates, extreme-shape boundaries |
-| 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week03_Tokenizer/10_RMSNorm_SwiGLU_Residual.ipynb) | Why normalization is needed, numerical experiments on RMSNorm and the role of ε, why SwiGLU uses three linears, the identity path of a residual connection, the ordering inside a pre-norm block, key correctness checks |
+| 9 | Tensor Shapes / Linear / Embedding | [09_Tensor_Shapes_Linear_Embedding.ipynb](notes/week04_Neural_Network_Primitives/09_Tensor_Shapes_Linear_Embedding.ipynb) | Shape / stride / dtype, broadcasting and batched matmul, the linear formula vs PyTorch's weight layout, matching backward and not just forward, embedding as a table lookup rather than numeric token IDs, gradient accumulation for repeated tokens, first-order parameter and memory estimates, extreme-shape boundaries |
+| 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week04_Neural_Network_Primitives/10_RMSNorm_SwiGLU_Residual.ipynb) | Why normalization is needed, numerical experiments on RMSNorm and the role of ε, why SwiGLU uses three linears, the identity path of a residual connection, the ordering inside a pre-norm block, key correctness checks |
 
-> Note: Lessons 09–10 belong to Week 4 (Neural Network Primitives) but currently still live in the `week03_Tokenizer/` directory. Softmax and cross entropy for Week 4 were already covered in Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb).
+> Note: Softmax and cross entropy for Week 4 were already covered in Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb).
 
 ---
 
