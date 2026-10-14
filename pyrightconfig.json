@@ -1,0 +1,8 @@
+{
+  "venvPath": "/home/xiaoming/miniforge3/envs",
+  "venv": "cs336",
+  "typeCheckingMode": "basic",
+  "reportUnusedImport": "warning",
+  "reportUnusedVariable": "warning",
+  "reportMissingTypeStubs": "warning"
+}
