@@ -18,6 +18,7 @@
 - [Notes Index](#notes-index)
 - [Study Methodology](#study-methodology)
 - [Environment](#environment)
+- [Data Preparation](#data-preparation)
 - [References](#references)
 - [Commit Conventions](#commit-conventions)
 
@@ -97,6 +98,7 @@ CS336-Learning/
 ├── README-en.md                 # English version (this file)
 ├── cs336_learning_roadmap.md    # 20-week roadmap (environment / weekly plan / completion criteria / references)
 ├── pyrightconfig.json           # Pyright type-checking config (points at the cs336 conda env)
+├── data/                        # Datasets (gitignored, see "Data Preparation")
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 01–05: tensor thinking & autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12: PyTorch NN fundamentals + mini project
@@ -109,7 +111,7 @@ CS336-Learning/
 
 Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experiments/` directories as assignments progress.
 
-> Note: `checkpoints/`, `*.pt`, `datasets/`, `.venv/` and similar artifacts are excluded via [.gitignore](.gitignore); notebooks generate them when run.
+> Note: `data/`, `checkpoints/`, `*.pt`, `datasets/`, `.venv/` and similar datasets and artifacts are excluded via [.gitignore](.gitignore); re-download them using the [Data Preparation](#data-preparation) section when needed.
 
 ---
 
@@ -218,6 +220,41 @@ Correct shapes → Forward matches reference → Backward matches reference → 
 The environment plan (dividing responsibilities between Windows and WSL2, keeping Linux project files on ext4 instead of `/mnt`) is in section 2 of [cs336_learning_roadmap.md](cs336_learning_roadmap.md); Git workflow and backup strategy are in sections 26–27.
 
 Notes are Jupyter notebooks and can be run directly. The recommended workflow is: implement it yourself first, then align against the PyTorch reference.
+
+---
+
+## Data Preparation
+
+Assignment 1 uses [TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories) (the GPT-4 generated version) plus a subsample of OpenWebText. Download them into `data/` at the repository root:
+
+```bash
+mkdir -p data
+cd data
+
+# TinyStories V2 (GPT-4)
+wget https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStoriesV2-GPT4-train.txt
+wget https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStoriesV2-GPT4-valid.txt
+
+# OpenWebText subsample
+wget https://huggingface.co/datasets/stanford-cs336/owt-sample/resolve/main/owt_train.txt.gz
+gunzip owt_train.txt.gz
+wget https://huggingface.co/datasets/stanford-cs336/owt-sample/resolve/main/owt_valid.txt.gz
+gunzip owt_valid.txt.gz
+
+cd ..
+```
+
+| File | Approx. size | Purpose |
+| --- | ---: | --- |
+| `TinyStoriesV2-GPT4-train.txt` | 2.1 GB | Training corpus |
+| `TinyStoriesV2-GPT4-valid.txt` | 22 MB | Validation split |
+| `owt_train.txt` / `owt_valid.txt` | a few GB / tens of MB | OWT subsample, for comparing data distributions |
+
+Notes:
+
+- Both the TinyStories and OWT corpora use `<|endoftext|>` as the document separator;
+- If the network is flaky, use `wget -c` to resume, or replace `wget` with `curl -L -O`;
+- `data/` is excluded via [.gitignore](.gitignore), so datasets never enter the repository; re-run the commands above on a new machine.
 
 ---
 

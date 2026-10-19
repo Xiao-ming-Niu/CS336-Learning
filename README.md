@@ -17,6 +17,7 @@
 - [笔记索引](#笔记索引)
 - [学习方法论](#学习方法论)
 - [学习环境](#学习环境)
+- [数据准备](#数据准备)
 - [参考资料](#参考资料)
 - [Git 提交规范](#git-提交规范)
 
@@ -96,6 +97,7 @@ CS336-Learning/
 ├── README-en.md                 # English version
 ├── cs336_learning_roadmap.md    # 20 周自学路线图（环境 / 周计划 / 完成状态 / 资料）
 ├── pyrightconfig.json           # Pyright 类型检查配置（指向 cs336 conda 环境）
+├── data/                        # 数据集（已 gitignore，见「数据准备」）
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 01–05：张量思维与 Autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12：PyTorch NN 基础 + Mini Project
@@ -108,7 +110,7 @@ CS336-Learning/
 
 后续 Assignment 会按 Phase 逐步扩展出 `src/`、`tests/`、`benchmarks/`、`configs/`、`experiments/` 等目录。
 
-> 注：`checkpoints/`、`*.pt`、`datasets/`、`.venv/` 等训练产物与环境目录已在 [.gitignore](.gitignore) 中排除，Notebook 运行时会自行生成。
+> 注：`data/`、`checkpoints/`、`*.pt`、`datasets/`、`.venv/` 等数据集与训练产物已在 [.gitignore](.gitignore) 中排除，需要时按「数据准备」一节重新下载。
 
 ---
 
@@ -217,6 +219,41 @@ Shape 正确  →  Forward 与 reference 对齐  →  Backward 与 reference 对
 环境方案（Windows 与 WSL2 的职责划分、Linux 项目文件放在 ext4 而非 `/mnt` 下）见 [cs336_learning_roadmap.md](cs336_learning_roadmap.md) 第 2 节；Git 工作流与备份策略见第 26–27 节。
 
 笔记为 Notebook 形式，可直接运行验证；建议先自己实现，再与 PyTorch reference 对齐。
+
+---
+
+## 数据准备
+
+Assignment 1 使用 [TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories)（GPT-4 生成版）与 OpenWebText 子采样。执行以下命令下载到仓库根目录的 `data/`：
+
+```bash
+mkdir -p data
+cd data
+
+# TinyStories V2 (GPT-4)
+wget https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStoriesV2-GPT4-train.txt
+wget https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStoriesV2-GPT4-valid.txt
+
+# OpenWebText 子采样
+wget https://huggingface.co/datasets/stanford-cs336/owt-sample/resolve/main/owt_train.txt.gz
+gunzip owt_train.txt.gz
+wget https://huggingface.co/datasets/stanford-cs336/owt-sample/resolve/main/owt_valid.txt.gz
+gunzip owt_valid.txt.gz
+
+cd ..
+```
+
+| 文件 | 大小（约） | 用途 |
+| --- | ---: | --- |
+| `TinyStoriesV2-GPT4-train.txt` | 2.1 GB | 训练语料 |
+| `TinyStoriesV2-GPT4-valid.txt` | 22 MB | 验证集 |
+| `owt_train.txt` / `owt_valid.txt` | 数 GB / 数十 MB | OWT 子采样，用于对比不同数据分布 |
+
+说明：
+
+- TinyStories 与 OWT 语料均以 `<|endoftext|>` 作为文档分隔符；
+- 网络不稳定时可用 `wget -c` 断点续传，或把 `wget` 换成 `curl -L -O`；
+- `data/` 已在 [.gitignore](.gitignore) 中排除，数据集不会进入仓库，换机器时重新执行上面的命令即可。
 
 ---
 
