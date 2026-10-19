@@ -100,7 +100,10 @@ CS336-Learning/
     ├── week01_Tensor_thinking/  # Lesson 01–05：张量思维与 Autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12：PyTorch NN 基础 + Mini Project
     ├── week03_Tokenizer/        # Lesson 01–08：Tokenizer 全流程（Basic → Inference）
-    └── week04_Neural_Network_Primitives/  # Lesson 09–15：NN Primitives / Attention / Transformer / 训练整合
+    ├── week04_Neural_Network_Primitives/  # Lesson 09–10：Tensor Shapes / Linear / Embedding / RMSNorm / SwiGLU / Residual
+    ├── week05_Attention/        # Lesson 11：Scaled Dot-Product / Causal / Multi-Head Attention
+    ├── week06_Transformer_AdamW/  # Lesson 12–13：RoPE / Transformer Block / LM / Cross Entropy / AdamW / LR Schedule
+    └── week07_TinyStories_Training/  # Lesson 14–15：训练循环 / Checkpoint / Sampling / Resource Accounting
 ```
 
 后续 Assignment 会按 Phase 逐步扩展出 `src/`、`tests/`、`benchmarks/`、`configs/`、`experiments/` 等目录。
@@ -160,23 +163,21 @@ CS336-Learning/
 
 | # | Lesson | Notebook | 关键内容 |
 | --- | --- | --- | --- |
-| 11 | Scaled Dot-Product / Causal Attention | [11_Scaled_Dot_Product_Causal_Attention.ipynb](notes/week04_Neural_Network_Primitives/11_Scaled_Dot_Product_Causal_Attention.ipynb) | 从 `(B,T,D)` 得到 `(B,H,T,D_head)` 的 reshape / transpose、scaled dot-product、causal mask 与 `-inf`、与 `F.scaled_dot_product_attention` 数值对齐、完整 Multi-Head Attention 模块、修改未来 token 检验因果性、梯度与单 token shape 边界 |
+| 11 | Scaled Dot-Product / Causal Attention | [11_Scaled_Dot_Product_Causal_Attention.ipynb](notes/week05_Attention/11_Scaled_Dot_Product_Causal_Attention.ipynb) | 从 `(B,T,D)` 得到 `(B,H,T,D_head)` 的 reshape / transpose、scaled dot-product、causal mask 与 `-inf`、与 `F.scaled_dot_product_attention` 数值对齐、完整 Multi-Head Attention 模块、修改未来 token 检验因果性、梯度与单 token shape 边界 |
 
 ### Week 6 — Transformer + AdamW 🚧
 
 | # | Lesson | Notebook | 关键内容 |
 | --- | --- | --- | --- |
-| 12 | RoPE / Transformer Block / Transformer LM | [12_RoPE_Transformer_Block_LM.ipynb](notes/week04_Neural_Network_Primitives/12_RoPE_Transformer_Block_LM.ipynb) | 为什么 attention 需要位置信息、RoPE 的两条性质、带 RoPE 的 Multi-Head Causal Self-Attention、Pre-Norm Transformer Block、组装 Transformer Language Model、next-token objective、prefix invariance |
-| 13 | Cross Entropy / AdamW / LR Schedule | [13_Cross_Entropy_AdamW_LR_Schedule.ipynb](notes/week04_Neural_Network_Primitives/13_Cross_Entropy_AdamW_LR_Schedule.ipynb) | 从 logits 计算 cross entropy、为什么不能先 `exp(logits)`、梯度公式验证、AdamW 的动量 / 偏差修正 / 解耦权重衰减、AdamW ≠ Adam + L2、warmup + cosine decay、gradient clipping 作用于全局梯度范数、perplexity |
+| 12 | RoPE / Transformer Block / Transformer LM | [12_RoPE_Transformer_Block_LM.ipynb](notes/week06_Transformer_AdamW/12_RoPE_Transformer_Block_LM.ipynb) | 为什么 attention 需要位置信息、RoPE 的两条性质、带 RoPE 的 Multi-Head Causal Self-Attention、Pre-Norm Transformer Block、组装 Transformer Language Model、next-token objective、prefix invariance |
+| 13 | Cross Entropy / AdamW / LR Schedule | [13_Cross_Entropy_AdamW_LR_Schedule.ipynb](notes/week06_Transformer_AdamW/13_Cross_Entropy_AdamW_LR_Schedule.ipynb) | 从 logits 计算 cross entropy、为什么不能先 `exp(logits)`、梯度公式验证、AdamW 的动量 / 偏差修正 / 解耦权重衰减、AdamW ≠ Adam + L2、warmup + cosine decay、gradient clipping 作用于全局梯度范数、perplexity |
 
 ### Week 7 — TinyStories Training 🚧
 
 | # | Lesson | Notebook | 关键内容 |
 | --- | --- | --- | --- |
-| 14 | Data Loading / Training Loop / Checkpoint / Sampling | [14_Data_Training_Checkpoint_Sampling.ipynb](notes/week04_Neural_Network_Primitives/14_Data_Training_Checkpoint_Sampling.ipynb) | LM 数据加载与边界案例、最小训练用 decoder、真正执行的 training loop、train / eval 分离、checkpoint 不只保存权重、autoregressive generation 每次只生成一个 token、sampling 边界情况、走向 TinyStories |
-| 15 | Assignment 1 知识整合与 Resource Accounting | [15_Assignment1_Knowledge_Resource_Accounting.ipynb](notes/week04_Neural_Network_Primitives/15_Assignment1_Knowledge_Resource_Accounting.ipynb) | Assignment 1 整体数据流、模块接口与典型 shape、从结构推导 Transformer 参数量、矩阵乘法 FLOPs 与 context length 成本、训练显存构成、激活显存与吞吐量、从 07 到 14 的跨模块不变量、过渡到官方 Assignment 1 |
-
-> 说明：Lesson 11–15 按 roadmap 归属列在 Week 5–7，文件目前仍与 Lesson 09–10 一起位于 `notes/week04_Neural_Network_Primitives/` 目录。
+| 14 | Data Loading / Training Loop / Checkpoint / Sampling | [14_Data_Training_Checkpoint_Sampling.ipynb](notes/week07_TinyStories_Training/14_Data_Training_Checkpoint_Sampling.ipynb) | LM 数据加载与边界案例、最小训练用 decoder、真正执行的 training loop、train / eval 分离、checkpoint 不只保存权重、autoregressive generation 每次只生成一个 token、sampling 边界情况、走向 TinyStories |
+| 15 | Assignment 1 知识整合与 Resource Accounting | [15_Assignment1_Knowledge_Resource_Accounting.ipynb](notes/week07_TinyStories_Training/15_Assignment1_Knowledge_Resource_Accounting.ipynb) | Assignment 1 整体数据流、模块接口与典型 shape、从结构推导 Transformer 参数量、矩阵乘法 FLOPs 与 context length 成本、训练显存构成、激活显存与吞吐量、从 07 到 14 的跨模块不变量、过渡到官方 Assignment 1 |
 
 ---
 
