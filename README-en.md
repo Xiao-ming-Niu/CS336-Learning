@@ -6,7 +6,7 @@
 > starting from PyTorch tensor thinking and building up the full LLM training stack:
 > Tokenizer → Transformer → Training → GPU Systems → Scaling Laws → Data → Alignment.
 
-**Current progress: Week 4 / 20 (Week 3 done, Week 4 in progress)**
+**Current progress: Week 7 / 20 (Weeks 1–3 done; Weeks 4–7 drafted and in progress)**
 
 ---
 
@@ -101,7 +101,7 @@ CS336-Learning/
     ├── week01_Tensor_thinking/  # Lesson 01–05: tensor thinking & autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12: PyTorch NN fundamentals + mini project
     ├── week03_Tokenizer/        # Lesson 01–08: the full tokenizer pipeline (basics → inference)
-    └── week04_Neural_Network_Primitives/  # Lesson 09–10: linear / embedding / RMSNorm / SwiGLU / residual
+    └── week04_Neural_Network_Primitives/  # Lesson 09–15: NN primitives / attention / transformer / training integration
 ```
 
 Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experiments/` directories as assignments progress.
@@ -156,6 +156,28 @@ Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experim
 | 10 | RMSNorm / SwiGLU / Residual | [10_RMSNorm_SwiGLU_Residual.ipynb](notes/week04_Neural_Network_Primitives/10_RMSNorm_SwiGLU_Residual.ipynb) | Why normalization is needed, numerical experiments on RMSNorm and the role of ε, why SwiGLU uses three linears, the identity path of a residual connection, the ordering inside a pre-norm block, key correctness checks |
 
 > Note: Softmax and cross entropy for Week 4 were already covered in Week 2 [Lesson 09](notes/week02_Pytorch_nn/09_softmax_cross_entropy.ipynb).
+
+### Week 5 — Attention 🚧
+
+| # | Lesson | Notebook | Highlights |
+| --- | --- | --- | --- |
+| 11 | Scaled Dot-Product / Causal Attention | [11_Scaled_Dot_Product_Causal_Attention.ipynb](notes/week04_Neural_Network_Primitives/11_Scaled_Dot_Product_Causal_Attention.ipynb) | Turning `(B,T,D)` into `(B,H,T,D_head)` via reshape / transpose, scaled dot-product, causal masking with `-inf`, matching `F.scaled_dot_product_attention` numerically, a full multi-head attention module, checking causality by perturbing future tokens, gradients and single-token shape boundaries |
+
+### Week 6 — Transformer + AdamW 🚧
+
+| # | Lesson | Notebook | Highlights |
+| --- | --- | --- | --- |
+| 12 | RoPE / Transformer Block / Transformer LM | [12_RoPE_Transformer_Block_LM.ipynb](notes/week04_Neural_Network_Primitives/12_RoPE_Transformer_Block_LM.ipynb) | Why attention needs positional information, the two properties of RoPE, multi-head causal self-attention with RoPE, building a pre-norm transformer block, assembling a transformer language model, the next-token objective, prefix invariance |
+| 13 | Cross Entropy / AdamW / LR Schedule | [13_Cross_Entropy_AdamW_LR_Schedule.ipynb](notes/week04_Neural_Network_Primitives/13_Cross_Entropy_AdamW_LR_Schedule.ipynb) | Cross entropy from logits, why you must not `exp(logits)` first, verifying the gradient formula, AdamW's momentum / bias correction / decoupled weight decay, AdamW ≠ Adam + L2, warmup + cosine decay, gradient clipping on the global norm, perplexity |
+
+### Week 7 — TinyStories Training 🚧
+
+| # | Lesson | Notebook | Highlights |
+| --- | --- | --- | --- |
+| 14 | Data Loading / Training Loop / Checkpoint / Sampling | [14_Data_Training_Checkpoint_Sampling.ipynb](notes/week04_Neural_Network_Primitives/14_Data_Training_Checkpoint_Sampling.ipynb) | LM data loading and its edge cases, a minimal decoder for training, a training loop that actually runs, keeping train and eval separate, checkpoints that hold more than weights, autoregressive generation one token at a time, sampling edge cases, moving toward TinyStories |
+| 15 | Assignment 1 Integration & Resource Accounting | [15_Assignment1_Knowledge_Resource_Accounting.ipynb](notes/week04_Neural_Network_Primitives/15_Assignment1_Knowledge_Resource_Accounting.ipynb) | The overall Assignment 1 data flow, module interfaces and typical shapes, deriving transformer parameter counts from the architecture, matmul FLOPs and the cost of context length, what training memory actually contains, activation memory and throughput, cross-module invariants from lesson 07 to 14, transitioning to the official Assignment 1 |
+
+> Note: Lessons 11–15 are listed under Weeks 5–7 according to the roadmap, while the files still live with Lessons 09–10 in `notes/week04_Neural_Network_Primitives/`.
 
 ---
 
@@ -238,8 +260,8 @@ Fix RoPE broadcasting bug
 - [x] Week 1 — Tensor Thinking (Lessons 1–5)
 - [x] Week 2 — PyTorch NN Fundamentals (Lessons 6–12, including the mini project)
 - [x] Week 3 — Tokenizer (Lessons 01–08: basics / toy BPE / pre-tokenization / special tokens / correct BPE / profiling and optimization / file-based chunking and multi-processing / inference)
-- [ ] Week 4 — Neural Network Primitives (🚧 in progress: Lessons 09–10 cover tensor shapes / linear / embedding / RMSNorm / SwiGLU / residual)
-- [ ] Week 5 — Attention
-- [ ] Week 6 — Transformer + AdamW
-- [ ] Week 7 — TinyStories Training
+- [ ] Week 4 — Neural Network Primitives (🚧 Lessons 09–10: tensor shapes / linear / embedding / RMSNorm / SwiGLU / residual)
+- [ ] Week 5 — Attention (🚧 Lesson 11: scaled dot-product / causal attention / multi-head)
+- [ ] Week 6 — Transformer + AdamW (🚧 Lessons 12–13: RoPE / transformer block / LM / cross entropy / AdamW / LR schedule)
+- [ ] Week 7 — TinyStories Training (🚧 Lessons 14–15: data loading / training loop / checkpoints / sampling / resource accounting)
 - [ ] Phases 2–6 (Systems / Scaling / Data / Alignment / Portfolio)
