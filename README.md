@@ -14,6 +14,7 @@
 - [项目简介](#项目简介)
 - [学习路线](#学习路线20-周)
 - [仓库结构](#仓库结构)
+- [实现代码](#实现代码)
 - [笔记索引](#笔记索引)
 - [学习方法论](#学习方法论)
 - [学习环境](#学习环境)
@@ -98,6 +99,10 @@ CS336-Learning/
 ├── cs336_learning_roadmap.md    # 20 周自学路线图（环境 / 周计划 / 完成状态 / 资料）
 ├── pyrightconfig.json           # Pyright 类型检查配置（指向 cs336 conda 环境）
 ├── data/                        # 数据集（已 gitignore，见「数据准备」）
+├── Code/                        # Assignment 1 核心实现
+│   ├── train_bpe.py             # byte-level BPE 训练（倒排索引 + 增量更新 + heap）
+│   ├── tokenizer.py             # Tokenizer 类：encode / decode / 序列化
+│   └── pretokenization.py       # GPT-2 regex 预分词、special token、可流式分块
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 01–05：张量思维与 Autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12：PyTorch NN 基础 + Mini Project
@@ -111,6 +116,20 @@ CS336-Learning/
 后续 Assignment 会按 Phase 逐步扩展出 `src/`、`tests/`、`benchmarks/`、`configs/`、`experiments/` 等目录。
 
 > 注：`data/`、`checkpoints/`、`*.pt`、`datasets/`、`.venv/` 等数据集与训练产物已在 [.gitignore](.gitignore) 中排除，需要时按「数据准备」一节重新下载。
+
+---
+
+## 实现代码
+
+`Code/` 下是 Assignment 1 的模块化实现，按「训练阶段」与「使用阶段」拆分：
+
+| 文件 | 职责 | 关键点 |
+| --- | --- | --- |
+| [train_bpe.py](Code/train_bpe.py) | byte-level BPE 训练 | 倒排索引 `pair → {word}`、增量更新 `pair_freq`、heap + lazy deletion 选 winner、与 Assignment 1 一致的 `vocab` / `merges` 契约 |
+| [tokenizer.py](Code/tokenizer.py) | BPE 使用阶段 | 按 merge rank 贪心合并、special token 原子化、`encode` / `decode` / `encode_iterable` / `to_files` / `from_files` |
+| [pretokenization.py](Code/pretokenization.py) | 预分词与计数 | GPT-2 regex、special token 隔离、UTF-8 bytes 化、可流式安全分块的 `Counter` 累加 |
+
+训练（`corpus → vocab + merges`）与编码（`text + vocab + merges → ids`）严格分离；对应原理与逐行推导见 [Week 3 Tokenizer](notes/week03_Tokenizer/) 与 [Week 7](notes/week07_TinyStories_Training/) 笔记。
 
 ---
 

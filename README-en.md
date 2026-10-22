@@ -15,6 +15,7 @@
 - [Overview](#overview)
 - [Learning Roadmap](#learning-roadmap-20-weeks)
 - [Repository Layout](#repository-layout)
+- [Source Code](#source-code)
 - [Notes Index](#notes-index)
 - [Study Methodology](#study-methodology)
 - [Environment](#environment)
@@ -99,6 +100,10 @@ CS336-Learning/
 ├── cs336_learning_roadmap.md    # 20-week roadmap (environment / weekly plan / completion criteria / references)
 ├── pyrightconfig.json           # Pyright type-checking config (points at the cs336 conda env)
 ├── data/                        # Datasets (gitignored, see "Data Preparation")
+├── Code/                        # Core Assignment 1 implementation
+│   ├── train_bpe.py             # byte-level BPE training (inverted index + incremental update + heap)
+│   ├── tokenizer.py             # Tokenizer class: encode / decode / serialization
+│   └── pretokenization.py       # GPT-2 regex pre-tokenization, special tokens, streaming chunks
 └── notes/
     ├── week01_Tensor_thinking/  # Lesson 01–05: tensor thinking & autograd
     ├── week02_Pytorch_nn/       # Lesson 06–12: PyTorch NN fundamentals + mini project
@@ -112,6 +117,20 @@ CS336-Learning/
 Later phases will grow `src/`, `tests/`, `benchmarks/`, `configs/`, and `experiments/` directories as assignments progress.
 
 > Note: `data/`, `checkpoints/`, `*.pt`, `datasets/`, `.venv/` and similar datasets and artifacts are excluded via [.gitignore](.gitignore); re-download them using the [Data Preparation](#data-preparation) section when needed.
+
+---
+
+## Source Code
+
+`Code/` holds the modular Assignment 1 implementation, split along the boundary between **training** and **inference**:
+
+| File | Responsibility | Highlights |
+| --- | --- | --- |
+| [train_bpe.py](Code/train_bpe.py) | byte-level BPE training | Inverted index `pair → {word}`, incremental `pair_freq` updates, heap + lazy deletion for winner selection, the `vocab` / `merges` contract used by Assignment 1 |
+| [tokenizer.py](Code/tokenizer.py) | BPE inference | Greedy merging by merge rank, atomic special tokens, `encode` / `decode` / `encode_iterable` / `to_files` / `from_files` |
+| [pretokenization.py](Code/pretokenization.py) | Pre-tokenization and counting | GPT-2 regex, special-token isolation, UTF-8 byte conversion, `Counter` aggregation over safe streaming chunks |
+
+Training (`corpus → vocab + merges`) and encoding (`text + vocab + merges → ids`) are kept strictly separate; the derivations live in the [Week 3 Tokenizer](notes/week03_Tokenizer/) and [Week 7](notes/week07_TinyStories_Training/) notes.
 
 ---
 
