@@ -6,7 +6,7 @@
 > starting from PyTorch tensor thinking and building up the full LLM training stack:
 > Tokenizer → Transformer → Training → GPU Systems → Scaling Laws → Data → Alignment.
 
-**Current progress: Week 7 / 20 (Weeks 1–3 done; Weeks 4–7 drafted and in progress)**
+**Current progress: Week 7 / 20 (Weeks 1–3 done; Weeks 4–7 notes in progress; core Assignment 1 modules implemented)**
 
 ---
 
@@ -98,6 +98,7 @@ CS336-Learning/
 ├── README.md                    # Chinese version (default)
 ├── README-en.md                 # English version (this file)
 ├── cs336_learning_roadmap.md    # 20-week roadmap (environment / weekly plan / completion criteria / references)
+├── AGENTS.md                    # Repository conventions (sync both READMEs before pushing, commit style, safety checks)
 ├── pyrightconfig.json           # Pyright type-checking config (points at the cs336 conda env)
 ├── data/                        # Datasets (gitignored, see "Data Preparation")
 ├── Code/                        # Core Assignment 1 implementation
@@ -320,5 +321,5 @@ Fix RoPE broadcasting bug
 - [ ] Week 4 — Neural Network Primitives (🚧 Lessons 09–10: tensor shapes / linear / embedding / RMSNorm / SwiGLU / residual)
 - [ ] Week 5 — Attention (🚧 Lesson 11: scaled dot-product / causal attention / multi-head)
 - [ ] Week 6 — Transformer + AdamW (🚧 Lessons 12–13: RoPE / transformer block / LM / cross entropy / AdamW / LR schedule)
-- [ ] Week 7 — TinyStories Training (🚧 Lessons 14–15: data loading / training loop / checkpoints / sampling / resource accounting)
+- [ ] Week 7 — TinyStories Training (🚧 Lessons 14–15: data loading / training loop / checkpoints / sampling / resource accounting; `Code/` already implements the BPE trainer / tokenizer / pre-tokenization)
 - [ ] Phases 2–6 (Systems / Scaling / Data / Alignment / Portfolio)

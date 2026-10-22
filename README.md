@@ -5,7 +5,7 @@
 > 自学 Stanford [CS336: Language Modeling from Scratch](https://cs336.stanford.edu/) 的完整学习仓库：
 > 从 PyTorch 张量思维出发，一路走到 Tokenizer → Transformer → 训练 → GPU 系统 → Scaling Laws → Data → Alignment 的完整 LLM Training Stack。
 
-**当前进度：Week 7 / 20（Week 1–3 已完成；Week 4–7 笔记已铺开，进行中）**
+**当前进度：Week 7 / 20（Week 1–3 已完成；Week 4–7 笔记进行中；Assignment 1 核心模块已实现）**
 
 ---
 
@@ -97,6 +97,7 @@ CS336-Learning/
 ├── README.md                    # 中文说明（本文件）
 ├── README-en.md                 # English version
 ├── cs336_learning_roadmap.md    # 20 周自学路线图（环境 / 周计划 / 完成状态 / 资料）
+├── AGENTS.md                    # 仓库协作约定（推送前同步双语文 README、提交规范、安全检查）
 ├── pyrightconfig.json           # Pyright 类型检查配置（指向 cs336 conda 环境）
 ├── data/                        # 数据集（已 gitignore，见「数据准备」）
 ├── Code/                        # Assignment 1 核心实现
@@ -319,5 +320,5 @@ Fix RoPE broadcasting bug
 - [ ] Week 4 — Neural Network Primitives（🚧 Lesson 09–10：Tensor Shapes / Linear / Embedding / RMSNorm / SwiGLU / Residual）
 - [ ] Week 5 — Attention（🚧 Lesson 11：Scaled Dot-Product / Causal Attention / Multi-Head）
 - [ ] Week 6 — Transformer + AdamW（🚧 Lesson 12–13：RoPE / Transformer Block / LM / Cross Entropy / AdamW / LR Schedule）
-- [ ] Week 7 — TinyStories Training（🚧 Lesson 14–15：数据加载 / 训练循环 / Checkpoint / Sampling / Resource Accounting）
+- [ ] Week 7 — TinyStories Training（🚧 Lesson 14–15：数据加载 / 训练循环 / Checkpoint / Sampling / Resource Accounting；`Code/` 已实现 BPE trainer / Tokenizer / Pre-tokenization）
 - [ ] Phase 2–6（Systems / Scaling / Data / Alignment / Portfolio）
